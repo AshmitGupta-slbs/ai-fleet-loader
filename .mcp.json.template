@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "saaslabs-skills": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://saaslabs-agent-skills-production.up.railway.app/mcp/",
+        "--header",
+        "Authorization:${SAASLABS_SKILLS_API_KEY}"
+      ],
+      "env": {
+        "SAASLABS_SKILLS_API_KEY": "Bearer __PASTE_YOUR_GATEWAY_KEY__"
+      }
+    }
+  }
+}

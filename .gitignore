@@ -1,0 +1,7 @@
+# Secrets and per-user rendered config — never commit these.
+.env
+.mcp.json
+CLAUDE.md
+
+# OS noise
+.DS_Store
