@@ -11,6 +11,20 @@
 #   TARGET=<dir>         (where to clone it; default ~/fleet-local)
 set -euo pipefail
 
+# --- robustness for `curl | bash` ------------------------------------------
+# When piped, the script body arrives on stdin — which nvm's installer and the
+# interactive setup.sh would consume, corrupting the run (e.g. "unbound variable"
+# partway through). Re-download to a temp file and re-exec it with the keyboard
+# (/dev/tty) as stdin, so the script reads from a real file and prompts work.
+SELF_URL="${SELF_URL:-https://raw.githubusercontent.com/AshmitGupta-slbs/ai-fleet-loader/main/install.sh}"
+if [ -z "${AIFL_REEXEC:-}" ] && [ ! -t 0 ] && [ -r /dev/tty ]; then
+  _self="$(mktemp 2>/dev/null || mktemp -t aifl-install)"
+  if curl -fsSL "$SELF_URL" -o "$_self" 2>/dev/null && [ -s "$_self" ]; then
+    AIFL_REEXEC=1 exec bash "$_self" </dev/tty
+  fi
+  rm -f "$_self"
+fi
+
 # --- where to get the kit and where to put it ------------------------------
 KIT_REPO="${KIT_REPO:-https://github.com/AshmitGupta-slbs/ai-fleet-loader.git}"
 TARGET="${TARGET:-$HOME/ai-fleet-loader}"
@@ -51,7 +65,7 @@ ensure_node() {
     export NVM_DIR="$HOME/.nvm"
     [ -d "$NVM_DIR" ] || git clone --depth 1 https://github.com/nvm-sh/nvm.git "$NVM_DIR" || true
     # shellcheck disable=SC1090
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm install --lts || true
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm install --lts </dev/null || true
   fi
   have node || die "Could not install Node.js automatically. Install Node 20+ from https://nodejs.org and re-run."
   ok "Node.js installed ($(node -v))"
@@ -63,7 +77,7 @@ if have claude; then
   ok "Claude Code present ($(claude --version 2>/dev/null || echo installed))"
 else
   say "Installing Claude Code CLI…"
-  npm install -g @anthropic-ai/claude-code || warn "npm global install failed — you may need 'sudo npm install -g @anthropic-ai/claude-code' or a Node version manager."
+  npm install -g @anthropic-ai/claude-code </dev/null || warn "npm global install failed — you may need 'sudo npm install -g @anthropic-ai/claude-code' or a Node version manager."
   have claude || warn "Claude Code not on PATH yet. If 'claude' isn't found after this, open a new terminal or add npm's global bin to PATH."
 fi
 
