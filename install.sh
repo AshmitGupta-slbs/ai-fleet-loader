@@ -26,8 +26,8 @@ if [ -z "${AIFL_REEXEC:-}" ] && [ ! -t 0 ] && [ -r /dev/tty ]; then
 fi
 
 # --- where to get the kit and where to put it ------------------------------
-KIT_REPO="${KIT_REPO:-https://github.com/AshmitGupta-slbs/ai-fleet-loader.git}"
-TARGET="${TARGET:-$HOME/ai-fleet-loader}"
+AIFL_KIT_REPO="${KIT_REPO:-https://github.com/AshmitGupta-slbs/ai-fleet-loader.git}"
+AIFL_TARGET="${TARGET:-$HOME/ai-fleet-loader}"
 
 say()  { printf '\033[1;36m%s\033[0m\n' "$*"; }
 ok()   { printf '\033[1;32m✓ %s\033[0m\n' "$*"; }
@@ -82,26 +82,26 @@ else
 fi
 
 # --- fetch / update the kit ------------------------------------------------
-if [ -d "$TARGET/.git" ]; then
-  say "Updating existing kit at $TARGET…"
-  git -C "$TARGET" pull --ff-only || warn "Could not fast-forward $TARGET (local changes?). Continuing with what's there."
-elif [ -e "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null || true)" ]; then
-  die "$TARGET exists and is not a git checkout. Move it aside or set TARGET=<dir> and re-run."
+if [ -d "$AIFL_TARGET/.git" ]; then
+  say "Updating existing kit at $AIFL_TARGET…"
+  git -C "$AIFL_TARGET" pull --ff-only || warn "Could not fast-forward $AIFL_TARGET (local changes?). Continuing with what's there."
+elif [ -e "$AIFL_TARGET" ] && [ -n "$(ls -A "$AIFL_TARGET" 2>/dev/null || true)" ]; then
+  die "$AIFL_TARGET exists and is not a git checkout. Move it aside or set TARGET=<dir> and re-run."
 else
-  say "Cloning the kit into $TARGET…"
-  git clone "$KIT_REPO" "$TARGET" || die "Clone failed. Check KIT_REPO ($KIT_REPO) and your access."
+  say "Cloning the kit into $AIFL_TARGET…"
+  git clone "$AIFL_KIT_REPO" "$AIFL_TARGET" || die "Clone failed. Check KIT_REPO ($AIFL_KIT_REPO) and your access."
 fi
-ok "Kit ready at $TARGET"
+ok "Kit ready at $AIFL_TARGET"
 
 # --- run setup (interactive: pod + keys + URL) -----------------------------
-chmod +x "$TARGET/setup.sh" "$TARGET/new-skill.sh" "$TARGET/fleet-query.sh" 2>/dev/null || true
+chmod +x "$AIFL_TARGET/setup.sh" "$AIFL_TARGET/new-skill.sh" "$AIFL_TARGET/fleet-query.sh" 2>/dev/null || true
 say ""
 say "Running setup (it will ask for your pod, your personal API key, and the agent URL)…"
 say ""
-( cd "$TARGET" && ./setup.sh )
+( cd "$AIFL_TARGET" && ./setup.sh )
 
 say ""
 ok "All set. To start your local agent:"
-say "    cd $TARGET && claude"
+say "    cd $AIFL_TARGET && claude"
 say ""
 say "Tip: re-run the installer anytime to update — curl -fsSL https://raw.githubusercontent.com/AshmitGupta-slbs/ai-fleet-loader/main/install.sh | bash"
