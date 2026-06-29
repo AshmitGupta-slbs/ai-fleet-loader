@@ -8,7 +8,7 @@
 #
 # Override defaults with env vars:
 #   KIT_REPO=<git url>   (where the kit lives)
-#   TARGET=<dir>         (where to clone it; default ~/fleet-local)
+#   TARGET=<dir>         (where to clone it; default ./ai-fleet-loader in the current directory)
 set -euo pipefail
 
 # --- robustness for `curl | bash` ------------------------------------------
@@ -27,7 +27,7 @@ fi
 
 # --- where to get the kit and where to put it ------------------------------
 AIFL_KIT_REPO="${KIT_REPO:-https://github.com/AshmitGupta-slbs/ai-fleet-loader.git}"
-AIFL_TARGET="${TARGET:-$HOME/ai-fleet-loader}"
+AIFL_TARGET="${TARGET:-$PWD/ai-fleet-loader}"
 
 say()  { printf '\033[1;36m%s\033[0m\n' "$*"; }
 ok()   { printf '\033[1;32m✓ %s\033[0m\n' "$*"; }

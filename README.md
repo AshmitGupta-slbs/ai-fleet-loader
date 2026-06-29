@@ -13,12 +13,15 @@ On macOS or Linux (Windows: use WSL):
 curl -fsSL https://raw.githubusercontent.com/AshmitGupta-slbs/ai-fleet-loader/main/install.sh | bash
 ```
 
-That installs the prerequisites (Node + Claude Code), downloads this kit to `~/ai-fleet-loader`, and runs
-setup — which asks for your **pod**, your **personal API key**, and your **agent URL**. Then:
+That installs the prerequisites (Node + Claude Code), downloads this kit into `ai-fleet-loader/` **in your
+current directory**, and runs setup — which asks for your **pod**, your **personal API key**, and your
+**agent URL**. Then:
 
 ```bash
-cd ~/ai-fleet-loader && claude
+cd ai-fleet-loader && claude
 ```
+
+> Want it somewhere specific? Set `TARGET`, e.g. `TARGET=~/ai-fleet-loader curl -fsSL …/install.sh | bash`.
 
 > Already have the kit cloned? Just run `./setup.sh` inside it, then `claude`.
 
@@ -29,7 +32,7 @@ base URL. (You optionally also get a read-only *skills gateway* token to browse 
 ## How it works — three surfaces
 
 ```
-~/ai-fleet-loader/
+./ai-fleet-loader/
   .claude/skills/   YOUR personal skills (real folder, auto-discovered + hot-reloaded)
     fleet/          → bundled: bridge to the LIVE agent (real data) via your key
     new-skill/      → bundled: "create a skill that…" writes a new skill for you
