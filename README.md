@@ -34,6 +34,7 @@ base URL. (You optionally also get a read-only *skills gateway* token to browse 
     fleet/          → bundled: bridge to the LIVE agent (real data) via your key
     new-skill/      → bundled: "create a skill that…" writes a new skill for you
     hello-local/    → sample local-machine skill
+    kremlin-wall/   → bundled: always-on ingestion defense (see the Security section in CLAUDE.md)
   .env              your keys + agent URL (never commit this)
   CLAUDE.md         your pod's persona + the rules the agent follows
   fleet-query.sh    the helper the `fleet` skill calls (POST /query with your key)
