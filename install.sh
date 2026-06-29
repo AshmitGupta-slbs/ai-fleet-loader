@@ -53,7 +53,7 @@ have python3 || warn "python3 not found — needed by the 'fleet' skill for safe
 # --- Node.js (for Claude Code + central-skills gateway) --------------------
 ensure_node() {
   if have node; then ok "Node.js present ($(node -v))"; return; fi
-  say "Installing Node.js…"
+  say "Installing Node.js..."
   if [ "$OS" = mac ] && have brew; then
     brew install node || true
   elif [ "$OS" = linux ] && have apt-get; then
@@ -61,7 +61,7 @@ ensure_node() {
   fi
   if ! have node; then
     # Universal, no-sudo fallback: nvm.
-    say "Falling back to nvm (no sudo needed)…"
+    say "Falling back to nvm (no sudo needed)..."
     export NVM_DIR="$HOME/.nvm"
     [ -d "$NVM_DIR" ] || git clone --depth 1 https://github.com/nvm-sh/nvm.git "$NVM_DIR" || true
     # shellcheck disable=SC1090
@@ -76,19 +76,19 @@ ensure_node
 if have claude; then
   ok "Claude Code present ($(claude --version 2>/dev/null || echo installed))"
 else
-  say "Installing Claude Code CLI…"
+  say "Installing Claude Code CLI..."
   npm install -g @anthropic-ai/claude-code </dev/null || warn "npm global install failed — you may need 'sudo npm install -g @anthropic-ai/claude-code' or a Node version manager."
   have claude || warn "Claude Code not on PATH yet. If 'claude' isn't found after this, open a new terminal or add npm's global bin to PATH."
 fi
 
 # --- fetch / update the kit ------------------------------------------------
 if [ -d "$AIFL_TARGET/.git" ]; then
-  say "Updating existing kit at $AIFL_TARGET…"
+  say "Updating existing kit at ${AIFL_TARGET}..."
   git -C "$AIFL_TARGET" pull --ff-only || warn "Could not fast-forward $AIFL_TARGET (local changes?). Continuing with what's there."
 elif [ -e "$AIFL_TARGET" ] && [ -n "$(ls -A "$AIFL_TARGET" 2>/dev/null || true)" ]; then
   die "$AIFL_TARGET exists and is not a git checkout. Move it aside or set TARGET=<dir> and re-run."
 else
-  say "Cloning the kit into $AIFL_TARGET…"
+  say "Cloning the kit into ${AIFL_TARGET}..."
   git clone "$AIFL_KIT_REPO" "$AIFL_TARGET" || die "Clone failed. Check KIT_REPO ($AIFL_KIT_REPO) and your access."
 fi
 ok "Kit ready at $AIFL_TARGET"
@@ -96,7 +96,7 @@ ok "Kit ready at $AIFL_TARGET"
 # --- run setup (interactive: pod + keys + URL) -----------------------------
 chmod +x "$AIFL_TARGET/setup.sh" "$AIFL_TARGET/new-skill.sh" "$AIFL_TARGET/fleet-query.sh" 2>/dev/null || true
 say ""
-say "Running setup (it will ask for your pod, your personal API key, and the agent URL)…"
+say "Running setup (it will ask for your pod, your personal API key, and the agent URL)..."
 say ""
 ( cd "$AIFL_TARGET" && ./setup.sh )
 
